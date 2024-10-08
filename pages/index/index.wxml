@@ -25,7 +25,7 @@
     <view class="section-title">热门商品</view>
     <view class="product-list">
       <view class="product-item" wx:for="{{hotProducts}}" wx:key="id" bindtap="onProductTap" data-id="{{item.id}}">
-        <image src="{{item.imageUrl}}" mode="aspectFill" />
+        <image src="{{item.image}}" mode="aspectFill" />
         <text class="product-name">{{item.name}}</text>
         <text class="product-price">¥{{item.price}}</text>
       </view>

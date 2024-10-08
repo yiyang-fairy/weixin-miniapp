@@ -1,4 +1,4 @@
-const mock = require("./mock.js");
+import mock from "./mock.js";
 
 const request = (url, method = "GET", data = {}) => {
   return new Promise((resolve, reject) => {
@@ -14,4 +14,4 @@ const request = (url, method = "GET", data = {}) => {
   });
 };
 
-module.exports = request;
+export default request;
