@@ -1,4 +1,4 @@
-const app = getApp();
+import request from "../../utils/request.js";
 
 Page({
   data: {
@@ -9,48 +9,46 @@ Page({
 
   onLoad: function () {
     this.fetchBanners();
-    console.log(this.data.banners, "banners 111111");
     this.fetchCategories();
     this.fetchHotProducts();
   },
 
   fetchBanners: function () {
-    console.log("开始获取轮播图数据");
-    wx.request({
-      url: "/api/banners",
-      success: (res) => {
-        console.log("轮播图数据获取成功:", res);
-        if (res.data && res.data.data) {
-          this.setData({ banners: res.data.data });
+    request("/api/banners")
+      .then((res) => {
+        if (res.data) {
+          this.setData({ banners: res.data });
         } else {
-          console.warn("轮播图数据格式不正确:", res.data);
+          console.warn("轮播图数据格式不正确:", res);
         }
-      },
-      fail: (error) => {
+      })
+      .catch((error) => {
         console.error("获取轮播图数据失败:", error);
-      },
-      complete: () => {
-        console.log("轮播图数据请求完成");
-      },
-    });
+      });
   },
 
   fetchCategories: function () {
-    wx.request({
-      url: "/api/categories",
-      success: (res) => {
-        this.setData({ categories: res.data });
-      },
-    });
+    request("/api/categories")
+      .then((res) => {
+        if (res.data) {
+          this.setData({ categories: res.data });
+        }
+      })
+      .catch((error) => {
+        console.error("获取分类数据失败:", error);
+      });
   },
 
   fetchHotProducts: function () {
-    wx.request({
-      url: "/api/hot-products",
-      success: (res) => {
-        this.setData({ hotProducts: res.data });
-      },
-    });
+    request("/api/hot-products")
+      .then((res) => {
+        if (res.data) {
+          this.setData({ hotProducts: res.data });
+        }
+      })
+      .catch((error) => {
+        console.error("获取热门商品数据失败:", error);
+      });
   },
 
   onSearchInput: function (e) {
