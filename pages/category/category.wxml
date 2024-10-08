@@ -1,0 +1,22 @@
+<view class="container">
+  <view class="category-list">
+    <view 
+      class="category-item {{item.id === currentCategory.id ? 'active' : ''}}" 
+      wx:for="{{categories}}" 
+      wx:key="id"
+      bindtap="changeCategory"
+      data-id="{{item.id}}"
+    >
+      {{item.name}}
+    </view>
+  </view>
+  <view class="product-list">
+    <view class="product-item" wx:for="{{products}}" wx:key="id">
+      <image src="{{item.image}}" mode="aspectFit" class="product-image"/>
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-price">¥{{item.price}}</text>
+      </view>
+    </view>
+  </view>
+</view>
