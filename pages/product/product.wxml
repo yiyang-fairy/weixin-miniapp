@@ -1,0 +1,81 @@
+<view class="product-container">
+  <swiper class="product-image" indicator-dots="{{true}}" autoplay="{{true}}" interval="{{3000}}" duration="{{500}}">
+    <swiper-item>
+      <image src="{{product.image}}" mode="aspectFit" class="detail-image"></image>
+    </swiper-item>
+    <!-- 可以添加更多swiper-item来展示多张商品图片 -->
+  </swiper>
+  
+  <view class="product-info">
+    <view class="price">¥ {{product.price}}</view>
+    <view class="name">{{product.name}}</view>
+  </view>
+  
+  <view class="tab-container">
+    <view class="tab-item {{activeTab === 'intro' ? 'active' : ''}}" bindtap="switchTab" data-tab="intro">商品简介</view>
+    <view class="tab-item {{activeTab === 'detail' ? 'active' : ''}}" bindtap="switchTab" data-tab="detail">商品详情</view>
+    <view class="tab-item {{activeTab === 'comments' ? 'active' : ''}}" bindtap="switchTab" data-tab="comments">商品评价</view>
+  </view>
+  
+  <view class="tab-content">
+    <view wx:if="{{activeTab === 'intro'}}" class="intro">
+      {{product.description}}
+    </view>
+    <view wx:if="{{activeTab === 'detail'}}" class="detail">
+      <!-- 这里可以添加更详细的商品信息 -->
+    </view>
+    <view wx:if="{{activeTab === 'comments'}}" class="comments">
+      <!-- 这里可以添加商品评价 -->
+    </view>
+  </view>
+  
+  <view class="bottom-bar">
+    <view class="cart-btn" bindtap="addToCart">加入购物车</view>
+    <view class="buy-btn" bindtap="buyNow">立即购买</view>
+  </view>
+  
+  <!-- 添加以下代码 -->
+  <view class="popup-mask" wx:if="{{showPopup}}" bindtap="closePopup"></view>
+  <view class="popup {{showPopup ? 'show' : ''}}" wx:if="{{showPopup}}">
+    <view class="popup-header">
+      <image class="popup-product-image" src="{{selectedSku.image || product.image}}" mode="aspectFit" />
+      <view class="popup-info">
+        <text class="popup-price">¥{{selectedSku.price || product.price}}</text>
+        <text class="popup-stock">库存: {{selectedSku.stock || product.stock}}件</text>
+        <text class="selected-sku" wx:if="{{selectedSku}}">已选: {{selectedSku.name}}</text>
+      </view>
+      <view class="close-btn" bindtap="closePopup">×</view>
+    </view>
+    <view class="popup-body">
+      <view class="sku-title">规格</view>
+      <view class="sku-list">
+        <view class="sku-item {{item.id === selectedSku.id ? 'selected' : ''}}" 
+              wx:for="{{product.skus}}" 
+              wx:key="id" 
+              bindtap="selectSku" 
+              data-sku="{{item}}">
+          {{item.name}}
+        </view>
+      </view>
+      <view class="quantity-wrapper">
+        <text class="quantity-title">数量</text>
+        <view class="quantity-control">
+          <text class="quantity-btn" bindtap="decreaseQuantity">-</text>
+          <input class="quantity-input" type="number" value="{{quantity}}" bindinput="updateQuantity" />
+          <text class="quantity-btn" bindtap="increaseQuantity">+</text>
+        </view>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <button class="confirm-btn" bindtap="confirmAction" 
+      style="{{actionText === '加入购物车' ? 'background-color: #ffd591; color: #fff;' : ''}}"
+      >{{actionText}}</button>
+    </view>
+  </view>
+  
+  <!-- 修改底部按钮 -->
+  <view class="footer">
+    <button class="cart-btn" bindtap="showPopup" data-action="addToCart">加入购物车</button>
+    <button class="buy-btn" bindtap="showPopup" data-action="buyNow">立即购买</button>
+  </view>
+</view>
