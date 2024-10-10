@@ -3,7 +3,7 @@ import mock from "./mock.js";
 const request = (url, method = "GET", data = {}) => {
   return new Promise((resolve, reject) => {
     // 获取模拟数据
-    const mockResult = mock.handle(url, method);
+    const mockResult = mock.handle(url, method, data);
 
     // 模拟网络延迟
     setTimeout(() => {

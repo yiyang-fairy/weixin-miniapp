@@ -103,11 +103,37 @@ Page({
       return;
     }
 
-    // 这里可以添加加入购物车或立即购买的逻辑
-    console.log("选中的SKU:", this.data.selectedSku);
-    console.log("数量:", this.data.quantity);
-    console.log("操作:", this.data.actionText);
+    const cartItem = {
+      id: this.data.product.id,
+      name: this.data.product.name,
+      image: this.data.product.image,
+      price: this.data.selectedSku.price,
+      skuName: this.data.selectedSku.name,
+      quantity: this.data.quantity,
+    };
 
-    this.closePopup();
+    if (this.data.actionText === "加入购物车") {
+      request("/api/cart", "POST", cartItem)
+        .then((res) => {
+          if (res.success) {
+            wx.showToast({
+              title: "已加入购物车",
+              icon: "success",
+            });
+            this.closePopup();
+          }
+        })
+        .catch((err) => {
+          console.error("加入购物车失败:", err);
+          wx.showToast({
+            title: "加入购物车失败",
+            icon: "none",
+          });
+        });
+    } else {
+      // 处理立即购买逻辑
+      console.log("立即购买:", cartItem);
+      this.closePopup();
+    }
   },
 });

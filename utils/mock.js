@@ -1,3 +1,5 @@
+const cartItems = []; // 在文件顶部定义cartItems数组
+
 const MockData = {
   "/api/banners": {
     data: [
@@ -138,15 +140,31 @@ const MockData = {
       ],
     },
   ],
+  "/api/cart": {
+    GET: () => {
+      return { cartItems: cartItems };
+    },
+    POST: (params) => {
+      const newItem = params;
+      const existingItemIndex = cartItems.findIndex(
+        (item) => item.id === newItem.id && item.skuName === newItem.skuName
+      );
+      if (existingItemIndex !== -1) {
+        cartItems[existingItemIndex].quantity += newItem.quantity;
+      } else {
+        cartItems.push(newItem);
+      }
+      return { success: true, message: "商品已添加到购物车" };
+    },
+  },
 };
 
 const mock = {
-  handle: function (url, method) {
+  handle: function (url, method, params) {
     const matchedUrl = Object.keys(MockData).find((mockUrl) =>
       url.includes(mockUrl)
     );
-
-    // 修改商品详情处理逻辑
+    // 处理商品详情
     if (url.startsWith("/api/product/")) {
       const productIdMatch = url.match(/id=(\d+)/);
       if (productIdMatch) {
@@ -154,11 +172,16 @@ const mock = {
         const product = MockData["/api/product"].find(
           (p) => p.id === productId
         );
-        console.log(product, "product");
-        return product ? product : null; // 直接返回找到的产品对象，而不是包装在 { data: product } 中
+        return product ? product : null;
       }
     }
     if (matchedUrl) {
+      if (
+        typeof MockData[matchedUrl] === "object" &&
+        MockData[matchedUrl][method]
+      ) {
+        return MockData[matchedUrl][method](params);
+      }
       return MockData[matchedUrl];
     }
 
