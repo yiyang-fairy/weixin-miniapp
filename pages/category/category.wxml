@@ -1,22 +1,74 @@
 <view class="container">
-  <view class="category-list">
-    <view 
-      class="category-item {{item.id === currentCategory.id ? 'active' : ''}}" 
-      wx:for="{{categories}}" 
-      wx:key="id"
-      bindtap="changeCategory"
-      data-id="{{item.id}}"
-    >
-      {{item.name}}
-    </view>
+  <view class="search-bar">
+    <icon type="search" size="14"></icon>
+    <input placeholder="请输入搜索关键词" placeholder-class="search-placeholder" />
   </view>
-  <view class="product-list">
-    <view class="product-item" wx:for="{{products}}" wx:key="id">
-      <image src="{{item.image}}" mode="aspectFit" class="product-image"/>
-      <view class="product-info">
-        <text class="product-name">{{item.name}}</text>
-        <text class="product-price">¥{{item.price}}</text>
+  <view class="content">
+    <view class="category-list">
+      <view 
+        wx:for="{{categories}}" 
+        wx:key="id"
+        bindtap="changeCategory"
+        data-id="{{item.id}}"
+        class="category-item {{currentCategoryId === item.id ? 'active' : ''}}" 
+      >
+        {{item.name}}
       </view>
+    </view>
+    <scroll-view 
+      scroll-y 
+      class="product-list" 
+      bindscroll="onProductListScroll"
+      scroll-into-view="{{currentScrollId}}"
+    >
+      <view 
+        id="category-{{category.id}}" 
+        class="category-products" 
+        wx:for="{{categories}}" 
+        wx:for-item="category" 
+        wx:key="id"
+      >
+        <view class="category-title">{{category.name}}</view>
+        <view class="product-item" wx:for="{{category.products}}" wx:key="id" bindtap="navigateToProduct" data-id="{{item.id}}">
+          <image src="{{item.image}}" mode="aspectFill" class="product-image"/>
+          <view class="product-info">
+            <view class="product-name">{{item.name}}</view>
+            <view class="product-sales">已售{{item.sales || 0}}</view>
+            <view class="product-price-row">
+              <text class="product-price">¥{{item.price}}</text>
+              <view class="add-to-cart" catchtap="showAddToCartPopup" data-product="{{item}}">
+                <image src="/images/cart.png" mode="aspectFit" class="cart-icon"/>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- 加入购物车弹窗 -->
+<view class="popup" wx:if="{{showPopup}}">
+  <view class="popup-content">
+    <view class="popup-title">加入购物车</view>
+    <view class="popup-product">
+      <image src="{{selectedProduct.image}}" mode="aspectFill" class="popup-product-image"/>
+      <view class="popup-product-info">
+        <view class="popup-product-name">{{selectedProduct.name}}</view>
+        <view class="popup-product-price">¥{{selectedProduct.price}}</view>
+      </view>
+    </view>
+    <view class="popup-quantity">
+      <view class="quantity-label">数量</view>
+      <view class="quantity-control">
+        <view class="quantity-button" bindtap="decreaseQuantity">-</view>
+        <input type="number" value="{{quantity}}" bindinput="onQuantityInput" class="quantity-input"/>
+        <view class="quantity-button" bindtap="increaseQuantity">+</view>
+      </view>
+    </view>
+    <view class="popup-buttons">
+      <button class="cancel-button" bindtap="hideAddToCartPopup">取消</button>
+      <button class="confirm-button" bindtap="addToCart">确定</button>
     </view>
   </view>
 </view>
