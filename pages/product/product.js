@@ -44,7 +44,7 @@ Page({
     const action = e.currentTarget.dataset.action;
     this.setData({
       showPopup: true,
-      actionText: action === "buyNow" ? "立即购买" : "加入购物车",
+      actionText: action === "addToCart" ? "加入购物车" : "立即购买",
     });
   },
 
@@ -94,46 +94,61 @@ Page({
     }
   },
 
-  confirmAction: function () {
-    if (!this.data.selectedSku) {
-      wx.showToast({
-        title: "请选择规格",
-        icon: "none",
-      });
-      return;
-    }
+  confirmAction: function (args) {
+    const { product, selectedSku, quantity } = args.detail;
 
-    const cartItem = {
-      id: this.data.product.id,
-      name: this.data.product.name,
-      image: this.data.product.image,
-      price: this.data.selectedSku.price,
-      skuName: this.data.selectedSku.name,
-      quantity: this.data.quantity,
-    };
-
+    // 根据 actionText 执行相应的操作
     if (this.data.actionText === "加入购物车") {
+      // 执行加入购物车的逻辑
+      const cartItem = {
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        quantity: quantity,
+        sku: {
+          id: selectedSku.id,
+          name: selectedSku.name,
+          price: selectedSku.price,
+        },
+      };
+
+      // 调用添加到购物车的API
       request("/api/cart", "POST", cartItem)
         .then((res) => {
-          if (res.success) {
-            wx.showToast({
-              title: "已加入购物车",
-              icon: "success",
-            });
-            this.closePopup();
-          }
+          wx.showToast({
+            title: "已加入购物车",
+            icon: "success",
+            duration: 2000,
+          });
         })
         .catch((err) => {
           console.error("加入购物车失败:", err);
           wx.showToast({
             title: "加入购物车失败",
             icon: "none",
+            duration: 2000,
           });
         });
     } else {
-      // 处理立即购买逻辑
-      console.log("立即购买:", cartItem);
-      this.closePopup();
+      // 执行立即购买的逻辑
+      const orderItem = {
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        quantity: quantity,
+        sku: {
+          id: selectedSku.id,
+          name: selectedSku.name,
+          price: selectedSku.price,
+        },
+      };
+
+      // 将订单信息存储到本地,然后跳转到订单确认页面
+      wx.setStorageSync("currentOrder", [orderItem]);
+      wx.navigateTo({
+        url: "/pages/order/confirm/confirm",
+      });
     }
+    this.closePopup();
   },
 });

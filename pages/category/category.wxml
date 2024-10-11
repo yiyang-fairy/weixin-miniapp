@@ -72,3 +72,30 @@
     </view>
   </view>
 </view>
+
+<view class="category-container">
+  <!-- 原有的分类页面内容 -->
+  
+  <!-- 在商品列表中添加购物车按钮 -->
+  <view class="product-list">
+    <view class="product-item" wx:for="{{products}}" wx:key="id">
+      <image src="{{item.image}}" mode="aspectFill" class="product-image"></image>
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-price">¥{{item.price}}</text>
+      </view>
+      <view class="cart-icon" bindtap="showPopup" data-product="{{item}}">
+        <image src="/images/cart-icon.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 使用新的加入购物车组件 -->
+  <add-to-cart
+    show="{{showPopup}}"
+    product="{{selectedProduct}}"
+    actionText="加入购物车"
+    bind:close="closePopup"
+    bind:confirm="confirmAddToCart"
+  ></add-to-cart>
+</view>

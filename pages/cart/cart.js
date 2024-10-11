@@ -9,30 +9,23 @@ Page({
   },
 
   onShow: function () {
-    this.fetchCartItems();
+    this.loadCartItems();
   },
 
-  fetchCartItems: function () {
+  loadCartItems: function () {
     request("/api/cart", "GET")
       .then((res) => {
-        if (res && res.cartItems) {
-          const cartItems = res.cartItems.map((item) => ({
-            ...item,
-            selected: false,
-          }));
-          this.setData({
-            cartItems: cartItems,
-          });
+        console.log(res, "res cart");
+        this.setData({ cartItems: res.cartItems }, () => {
           this.calculateTotal();
-        } else {
-          console.error("购物车数据格式不正确:", res);
-        }
+        });
       })
       .catch((err) => {
         console.error("获取购物车数据失败:", err);
         wx.showToast({
           title: "获取购物车数据失败",
           icon: "none",
+          duration: 2000,
         });
       });
   },
@@ -41,8 +34,8 @@ Page({
     let total = 0;
     let selectedCount = 0;
     this.data.cartItems.forEach((item) => {
-      if (item.selected && item.price && item.quantity) {
-        total += item.price * item.quantity;
+      if (item.selected && item.sku && item.sku.price && item.quantity) {
+        total += item.sku.price * item.quantity;
         selectedCount += item.quantity;
       }
     });
@@ -63,8 +56,9 @@ Page({
       }
       return item;
     });
-    this.setData({ cartItems });
-    this.calculateTotal();
+    this.setData({ cartItems }, () => {
+      this.calculateTotal();
+    });
     // 这里可以添加更新后端购物车数据的逻辑
   },
 
@@ -76,9 +70,10 @@ Page({
       }
       return item;
     });
-    this.setData({ cartItems });
-    this.calculateTotal();
-    this.updateAllSelected();
+    this.setData({ cartItems }, () => {
+      this.calculateTotal();
+      this.updateAllSelected();
+    });
   },
 
   toggleSelectAll: function () {
@@ -87,11 +82,15 @@ Page({
       ...item,
       selected: allSelected,
     }));
-    this.setData({
-      allSelected: allSelected,
-      cartItems: cartItems,
-    });
-    this.calculateTotal();
+    this.setData(
+      {
+        allSelected: allSelected,
+        cartItems: cartItems,
+      },
+      () => {
+        this.calculateTotal();
+      }
+    );
   },
 
   updateAllSelected: function () {
@@ -107,9 +106,10 @@ Page({
       });
       return;
     }
+    // 这里可以添加跳转到结算页面的逻辑
     wx.showToast({
-      title: "结算功能待实现",
-      icon: "none",
+      title: "正在前往结算",
+      icon: "success",
     });
   },
 });

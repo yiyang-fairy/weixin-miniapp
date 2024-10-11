@@ -34,44 +34,14 @@
     <view class="buy-btn" bindtap="buyNow">立即购买</view>
   </view>
   
-  <!-- 添加以下代码 -->
-  <view class="popup-mask" wx:if="{{showPopup}}" bindtap="closePopup"></view>
-  <view class="popup {{showPopup ? 'show' : ''}}" wx:if="{{showPopup}}">
-    <view class="popup-header">
-      <image class="popup-product-image" src="{{selectedSku.image || product.image}}" mode="aspectFit" />
-      <view class="popup-info">
-        <text class="popup-price">¥{{selectedSku.price || product.price}}</text>
-        <text class="popup-stock">库存: {{selectedSku.stock || product.stock}}件</text>
-        <text class="selected-sku" wx:if="{{selectedSku}}">已选: {{selectedSku.name}}</text>
-      </view>
-      <view class="close-btn" bindtap="closePopup">×</view>
-    </view>
-    <view class="popup-body">
-      <view class="sku-title">规格</view>
-      <view class="sku-list">
-        <view class="sku-item {{item.id === selectedSku.id ? 'selected' : ''}}" 
-              wx:for="{{product.skus}}" 
-              wx:key="id" 
-              bindtap="selectSku" 
-              data-sku="{{item}}">
-          {{item.name}}
-        </view>
-      </view>
-      <view class="quantity-wrapper">
-        <text class="quantity-title">数量</text>
-        <view class="quantity-control">
-          <text class="quantity-btn" bindtap="decreaseQuantity">-</text>
-          <input class="quantity-input" type="number" value="{{quantity}}" bindinput="updateQuantity" />
-          <text class="quantity-btn" bindtap="increaseQuantity">+</text>
-        </view>
-      </view>
-    </view>
-    <view class="popup-footer">
-      <button class="confirm-btn" bindtap="confirmAction" 
-      style="{{actionText === '加入购物车' ? 'background-color: #ffd591; color: #fff;' : ''}}"
-      >{{actionText}}</button>
-    </view>
-  </view>
+  <!-- 使用新的加入购物车组件 -->
+  <add-to-cart
+    show="{{showPopup}}"
+    product="{{product}}"
+    actionText="{{actionText}}"
+    bind:close="closePopup"
+    bind:confirm="confirmAction"
+  ></add-to-cart>
   
   <!-- 修改底部按钮 -->
   <view class="footer">

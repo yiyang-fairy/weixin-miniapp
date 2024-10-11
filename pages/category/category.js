@@ -8,9 +8,10 @@ Page({
     showPopup: false,
     selectedProduct: null,
     quantity: 1,
+    products: [],
   },
 
-  onLoad: function () {
+  onLoad: function (options) {
     this.fetchCategories();
   },
 
@@ -127,14 +128,19 @@ Page({
     }
   },
 
-  addToCart: function () {
-    const { selectedProduct, quantity } = this.data;
+  addToCart: function (args) {
+    // const { selectedProduct, quantity } = this.data;
+    const { product, selectedSku, quantity } = args;
     const cartItem = {
-      id: selectedProduct.id,
-      name: selectedProduct.name,
-      price: selectedProduct.price,
-      image: selectedProduct.image,
+      id: product.id,
+      name: product.name,
+      image: product.image,
       quantity: quantity,
+      sku: {
+        id: selectedSku.id,
+        name: selectedSku.name,
+        price: selectedSku.price,
+      },
     };
 
     request("/api/cart", "POST", cartItem).then((res) => {
@@ -153,5 +159,22 @@ Page({
         });
       }
     });
+  },
+
+  showPopup(e) {
+    const product = e.currentTarget.dataset.product;
+    this.setData({
+      showPopup: true,
+      selectedProduct: product,
+    });
+  },
+
+  closePopup() {
+    this.setData({ showPopup: false });
+  },
+
+  confirmAddToCart(e) {
+    const { product, selectedSku, quantity } = e.detail;
+    this.addToCart(product, selectedSku, quantity);
   },
 });
