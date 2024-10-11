@@ -11,7 +11,6 @@ Page({
   },
 
   onLoad: function (options) {
-    console.log(options, "options");
     const productId = options.id;
     this.getProductDetail(productId);
   },
@@ -19,13 +18,11 @@ Page({
   getProductDetail: function (productId) {
     request(`/api/product/id=${productId}`, "GET")
       .then((res) => {
-        console.log(res, "res");
         this.setData({
           product: res,
         });
       })
       .catch((err) => {
-        console.error("获取商品详情失败:", err);
         wx.showToast({
           title: "获取商品信息失败",
           icon: "none",
@@ -97,9 +94,7 @@ Page({
   confirmAction: function (args) {
     const { product, selectedSku, quantity } = args.detail;
 
-    // 根据 actionText 执行相应的操作
     if (this.data.actionText === "加入购物车") {
-      // 执行加入购物车的逻辑
       const cartItem = {
         id: product.id,
         name: product.name,
@@ -112,7 +107,6 @@ Page({
         },
       };
 
-      // 调用添加到购物车的API
       request("/api/cart", "POST", cartItem)
         .then((res) => {
           wx.showToast({
@@ -122,7 +116,6 @@ Page({
           });
         })
         .catch((err) => {
-          console.error("加入购物车失败:", err);
           wx.showToast({
             title: "加入购物车失败",
             icon: "none",
@@ -130,7 +123,6 @@ Page({
           });
         });
     } else {
-      // 执行立即购买的逻辑
       const orderItem = {
         id: product.id,
         name: product.name,
@@ -143,7 +135,6 @@ Page({
         },
       };
 
-      // 将订单信息存储到本地,然后跳转到订单确认页面
       wx.setStorageSync("currentOrder", [orderItem]);
       wx.navigateTo({
         url: "/pages/order/confirm/confirm",

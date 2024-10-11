@@ -1,7 +1,4 @@
 <view class="cart-container">
-  <view class="cart-header">
-    <text>其他</text>
-  </view>
   <view class="cart-list">
     <view class="cart-item" wx:for="{{cartItems}}" wx:key="id">
       <checkbox class="item-select" checked="{{item.selected}}" bindtap="toggleSelect" data-id="{{item.id}}"></checkbox>

@@ -15,13 +15,11 @@ Page({
   loadCartItems: function () {
     request("/api/cart", "GET")
       .then((res) => {
-        console.log(res, "res cart");
         this.setData({ cartItems: res.cartItems }, () => {
           this.calculateTotal();
         });
       })
       .catch((err) => {
-        console.error("获取购物车数据失败:", err);
         wx.showToast({
           title: "获取购物车数据失败",
           icon: "none",

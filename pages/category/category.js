@@ -129,7 +129,6 @@ Page({
   },
 
   addToCart: function (args) {
-    // const { selectedProduct, quantity } = this.data;
     const { product, selectedSku, quantity } = args;
     const cartItem = {
       id: product.id,
@@ -175,6 +174,6 @@ Page({
 
   confirmAddToCart(e) {
     const { product, selectedSku, quantity } = e.detail;
-    this.addToCart(product, selectedSku, quantity);
+    this.addToCart({ product, selectedSku, quantity });
   },
 });
