@@ -83,3 +83,29 @@ swiper image {
   color: #e74c3c;
   font-weight: bold;
 }
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
+  margin-bottom: 15px;
+}
+
+.category-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 5px;
+}
+
+.category-name {
+  font-size: 12px;
+  text-align: center;
+}

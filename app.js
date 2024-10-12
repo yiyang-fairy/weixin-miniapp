@@ -7,5 +7,6 @@ App({
   },
   globalData: {
     userInfo: null,
+    selectedCategory: null,
   },
 });

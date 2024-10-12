@@ -14,9 +14,9 @@
 
   <!-- 分类网格 -->
   <view class="category-grid">
-    <view class="category-item" wx:for="{{categories}}" wx:key="id" bindtap="onCategoryTap" data-id="{{item.id}}">
-      <image src="{{item.iconUrl}}" mode="aspectFit" />
-      <text>{{item.name}}</text>
+    <view class="category-item" wx:for="{{categories}}" wx:key="id" bindtap="onCategoryTap" data-id="{{item.id}}" data-index="{{index}}">
+      <image class="category-icon" src="{{item.icon}}" mode="aspectFit"></image>
+      <text class="category-name">{{item.name}}</text>
     </view>
   </view>
 

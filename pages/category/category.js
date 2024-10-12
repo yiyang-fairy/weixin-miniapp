@@ -1,5 +1,7 @@
 import request from "../../utils/request.js";
 
+const app = getApp();
+
 Page({
   data: {
     categories: [],
@@ -9,10 +11,21 @@ Page({
     selectedProduct: null,
     quantity: 1,
     products: [],
+    selectedCategoryIndex: 0,
   },
 
-  onLoad: function (options) {
+  onLoad: function () {
     this.fetchCategories();
+  },
+
+  onShow: function () {
+    if (app.globalData.selectedCategory) {
+      this.setData({
+        selectedCategoryIndex: app.globalData.selectedCategory.index,
+      });
+
+      app.globalData.selectedCategory = null;
+    }
   },
 
   fetchCategories: function () {
@@ -27,22 +40,15 @@ Page({
 
   changeCategory: function (e) {
     const categoryId = parseInt(e.currentTarget.dataset.id);
+
     this.setData(
       {
         currentCategoryId: categoryId,
         currentScrollId: `category-${categoryId}`,
       },
       () => {
-        // 滚动左侧分类列表到当前选中的分类
-        wx.createSelectorQuery()
-          .select(".category-list")
-          .boundingClientRect(function (rect) {
-            wx.pageScrollTo({
-              scrollTop: rect.top,
-              duration: 300,
-            });
-          })
-          .exec();
+        // 这个回调函数会在数据更新后执行
+        console.log(this.data, "this.data after update");
       }
     );
   },
@@ -62,8 +68,8 @@ Page({
         const nextCategory = categories[i + 1];
 
         if (
-          category.top <= scrollTop &&
-          (!nextCategory || nextCategory.top > scrollTop)
+          category.top - 60 <= scrollTop &&
+          (!nextCategory || nextCategory.top - 60 > scrollTop)
         ) {
           currentCategory = category;
           break;

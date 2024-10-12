@@ -1,5 +1,7 @@
 import request from "../../utils/request.js";
 
+const app = getApp();
+
 Page({
   data: {
     banners: [],
@@ -31,6 +33,8 @@ Page({
     request("/api/categories")
       .then((res) => {
         if (res.data) {
+          console.log(res.data, "分类数据");
+          // 假设API返回的数据中包含icon字段
           this.setData({ categories: res.data });
         }
       })
@@ -58,8 +62,20 @@ Page({
 
   onCategoryTap: function (e) {
     const categoryId = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/category/category?id=${categoryId}`,
+    const categoryIndex = e.currentTarget.dataset.index;
+
+    console.log("Category tapped:", categoryId, categoryIndex);
+
+    // 将分类信息存储在全局数据中
+    app.globalData.selectedCategory = {
+      id: categoryId,
+      index: categoryIndex,
+    };
+
+    console.log("Global data set:", app.globalData.selectedCategory);
+
+    wx.switchTab({
+      url: "/pages/category/category",
     });
   },
 
